@@ -71,7 +71,6 @@ const get_user = async (req, res) => {
   try {
     const { token } = req.body;
     const user = await User.findOne({ token });
-
     //bad case
     if (user.token !== token) {
       return res.status(400).json({
