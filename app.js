@@ -5,6 +5,7 @@ const User = require("./models/user");
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes");
 const producsRoutes = require("./routes/Prodcutsroutes");
+const { graphqlHTTP } = require("express-graphql");
 const PORT = 3007;
 const Message = require("./models/messageModel");
 const cors = require("cors");
@@ -27,6 +28,12 @@ app.use(bodyParser.json());
 app.use(cors(), express.json());
 app.use("/user", userRoutes);
 app.use("/products", producsRoutes);
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    graphiql: true,
+  })
+);
 
 const server = app.listen(PORT, (req, res) => {
   console.log("server start");
