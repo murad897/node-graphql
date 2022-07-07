@@ -6,7 +6,7 @@ const userRoutes = require("./routes/userRoutes");
 const producsRoutes = require("./routes/Prodcutsroutes");
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema");
-const PORT = 3007;
+const PORT = 3001;
 const Message = require("./models/messageModel");
 const cors = require("cors");
 const socket = require("socket.io");
@@ -60,7 +60,6 @@ const root = {
         token,
       });
 
-      console.log(user);
       return user;
     } catch (e) {
       console.log(e.message);

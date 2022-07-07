@@ -9,6 +9,7 @@ const schema = buildSchema(`
        password : String 
        token :  String  
    }
+   
    input UserInput {
        id : ID
        first_name : String   
