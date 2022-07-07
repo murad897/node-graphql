@@ -41,14 +41,14 @@ const root = {
   userRegistrate: async ({ input }) => {
     try {
       const { first_name, last_name, email, password, token } = input;
-      
+
       if (!(email && password && first_name && last_name)) {
         return "All input is required";
       }
       // check if user already exist
       const oldUser = await User.findOne({ email });
       if (oldUser) {
-        return "User Already Exist. Please Login"
+        return "User Already Exist. Please Login";
       }
       encryptedPassword = await bcrypt.hash(password, 10);
       // Create user in our database
@@ -61,6 +61,30 @@ const root = {
       });
 
       console.log(user);
+      return user;
+    } catch (e) {
+      console.log(e.message);
+    }
+  },
+  loginUser: async ({ input }) => {
+    try {
+      const { email, password } = input;
+      if (!(email && password)) {
+        return "All input is required";
+      }
+      const user = await User.findOne({ email });
+      if (user && (await bcrypt.compare(password, user.password))) {
+        // Create token
+        const token = jwt.sign(
+          { user_id: user._id, email },
+          process.env.TOKEN_KEY,
+          {
+            expiresIn: "2h",
+          }
+        );
+        user.token = token;
+        await user.save();
+      }
       return user;
     } catch (e) {
       console.log(e.message);

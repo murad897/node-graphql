@@ -9,7 +9,6 @@ const schema = buildSchema(`
        password : String 
        token :  String  
    }
-
    input UserInput {
        id : ID
        first_name : String   
@@ -26,6 +25,7 @@ const schema = buildSchema(`
 
    type Mutation {
        userRegistrate(input : UserInput) : User
+       loginUser(input : UserInput) : User
    }
 
 `);
