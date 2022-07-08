@@ -19,7 +19,8 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
-const userRegistrate = () => {};
+let user = null;
+let userID = null;
 
 const root = {
   getUser: async ({ token }) => {
@@ -40,7 +41,7 @@ const root = {
   },
   userRegistrate: async ({ input }) => {
     try {
-      const { first_name, last_name, email, password, token } = input;
+      const { first_name, last_name, email, password, token, products } = input;
 
       if (!(email && password && first_name && last_name)) {
         return "All input is required";
@@ -58,6 +59,7 @@ const root = {
         email: email.toLowerCase(), // sanitize: convert email to lowercase
         password: encryptedPassword,
         token,
+        products,
       });
 
       return user;
@@ -71,7 +73,7 @@ const root = {
       if (!(email && password)) {
         return "All input is required";
       }
-      const user = await User.findOne({ email });
+      user = await User.findOne({ email });
       if (user && (await bcrypt.compare(password, user.password))) {
         // Create token
         const token = jwt.sign(
@@ -82,12 +84,32 @@ const root = {
           }
         );
         user.token = token;
+        userID = user._id;
+
+        console.log(userID, "userId");
         await user.save();
       }
       return user;
     } catch (e) {
       console.log(e.message);
     }
+  },
+  createProduct: async ({ input }) => {
+    const { image, name, mpns, manifactuler, checkbox } = input;
+    if (!(image && name && mpns && manifactuler)) {
+      return "data product is not valid";
+    }
+    const data = await Product.create({
+      image,
+      name,
+      mpns,
+      manifactuler,
+      user: userID,
+      checkbox,
+      searchId: "",
+    });
+
+    return data;
   },
 };
 
